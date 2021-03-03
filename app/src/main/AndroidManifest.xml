@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AddressBook">
         <activity android:name=".DetailActivity"></activity>
-        <activity android:name=".InputActivity" />
+        <activity android:name=".SubmitActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

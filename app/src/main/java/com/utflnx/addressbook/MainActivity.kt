@@ -6,10 +6,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.utflnx.addressbook.Utils.DEFAULT_DATA_REQ_CODE
 import com.utflnx.addressbook.Utils.FORM_DATA
+import com.utflnx.addressbook.Utils.FORM_DATA_ITEM
+import com.utflnx.addressbook.Utils.FORM_DATA_ITEM_POS
 import com.utflnx.addressbook.Utils.FORM_TYPE
+import com.utflnx.addressbook.Utils.TYPE_SAVE_FORM
+import com.utflnx.addressbook.Utils.TYPE_UPDATE_FORM
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity: AppCompatActivity(), BookPresenter {
@@ -20,7 +23,6 @@ class MainActivity: AppCompatActivity(), BookPresenter {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         setUpBookAddressList()
     }
 
@@ -31,24 +33,42 @@ class MainActivity: AppCompatActivity(), BookPresenter {
         mRecyclerView.layoutManager = LinearLayoutManager(this)
         mRecyclerView.setHasFixedSize(true)
 
-        fab_new.setOnClickListener(this::navigateToSubmission)
+        fab_new.setOnClickListener(this::navigateNewBook)
         onItemsChangedListener(defaultItems)
     }
 
-    private fun navigateToSubmission(view: View) {
-        startActivityForResult(Intent(this, InputActivity::class.java).apply {
-            putExtra(FORM_TYPE, Utils.TYPE_SAVE_FORM)
+    override fun onItemViewClickListener(userModel: UserModel) {
+        Log.d(TAG, "onItemClickListener: ${userModel.name} ${userModel.email}")
+        startActivity(Intent(this, DetailActivity::class.java).apply {
+            putExtra(FORM_DATA_ITEM, userModel)
+        })
+    }
+
+    private fun navigateNewBook(view: View) {
+        startActivityForResult(Intent(this, SubmitActivity::class.java).apply {
+            putExtra(FORM_TYPE, TYPE_SAVE_FORM)
             putExtra(FORM_DATA, defaultItems)
         }, DEFAULT_DATA_REQ_CODE)
     }
 
-    override fun onItemClickListener(userModel: UserModel) {
-        Log.d(TAG, "onItemClickListener: ${userModel.name} ${userModel.email}")
+    override fun onItemEditClickListener(userModel: UserModel) {
+        Log.d(TAG, "onItemEditClickListener()")
+        startActivityForResult(Intent(this, SubmitActivity::class.java).apply {
+            putExtra(FORM_TYPE, TYPE_UPDATE_FORM)
+            putExtra(FORM_DATA, defaultItems)
+            putExtra(FORM_DATA_ITEM, userModel)
+        }, DEFAULT_DATA_REQ_CODE)
+    }
+
+    override fun onItemDeleteClickListener(position: Int) {
+        Log.d(TAG, "onItemDeleteClickListener: $position")
+        defaultItems.removeAt(position)
+        onItemsChangedListener(defaultItems)
     }
 
     override fun onItemsChangedListener(userModels: List<UserModel>) {
-        defaultItems = userModels as ArrayList<UserModel>
         Log.d(TAG, "onItemsChangedListener")
+        defaultItems = userModels as ArrayList<UserModel>
         mAdapter.setData(userModels)
         mRecyclerView.adapter = mAdapter
     }
@@ -57,7 +77,10 @@ class MainActivity: AppCompatActivity(), BookPresenter {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == DEFAULT_DATA_REQ_CODE && resultCode == RESULT_OK){
             data?.extras?.getSerializable(FORM_DATA).let {
-                if (it != null) onItemsChangedListener(it as ArrayList<UserModel>)
+                if (it != null) {
+                    defaultItems = it as ArrayList<UserModel>
+                    onItemsChangedListener(defaultItems)
+                }
             }
         }
     }

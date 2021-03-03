@@ -6,6 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.activity_input.view.*
+import kotlinx.android.synthetic.main.item_address_book.view.*
+import kotlinx.android.synthetic.main.item_address_book.view.email
+import kotlinx.android.synthetic.main.item_address_book.view.full_name
 
 class BookAdapter(context: Context): RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     lateinit var mListBookUsers: List<UserModel>
@@ -40,10 +44,12 @@ class BookAdapter(context: Context): RecyclerView.Adapter<RecyclerView.ViewHolde
     inner class GeneralViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         fun bind(userModel: UserModel, position: Int, mBookPresenter: BookPresenter) {
-            itemView.findViewById<TextView>(R.id.full_name).text = userModel.name
-            itemView.findViewById<TextView>(R.id.email).text = userModel.email
+            itemView.full_name.text = userModel.name
+            itemView.email.text = userModel.email
 
-            itemView.setOnClickListener{ mBookPresenter.onItemClickListener(userModel) }
+            itemView.icon_view.setOnClickListener{ mBookPresenter.onItemViewClickListener(userModel) }
+            itemView.icon_delete.setOnClickListener { mBookPresenter.onItemDeleteClickListener(position) }
+            itemView.icon_edit.setOnClickListener { mBookPresenter.onItemEditClickListener(userModel) }
         }
 
     }

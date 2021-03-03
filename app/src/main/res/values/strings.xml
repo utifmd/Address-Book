@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Address Book</string>
     <string name="_save">save</string>
-    <string name="_update">udate</string>
+    <string name="_update">update</string>
 </resources>

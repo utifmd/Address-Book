@@ -5,7 +5,7 @@
     android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".InputActivity">
+    tools:context=".SubmitActivity">
     <EditText android:id="@+id/full_name"
         android:hint="Full name"
         android:layout_marginHorizontal="16dp"
