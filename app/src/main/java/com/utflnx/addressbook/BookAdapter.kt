@@ -48,7 +48,7 @@ class BookAdapter(context: Context): RecyclerView.Adapter<RecyclerView.ViewHolde
             itemView.email.text = userModel.email
 
             itemView.icon_view.setOnClickListener{ mBookPresenter.onItemViewClickListener(userModel) }
-            itemView.icon_delete.setOnClickListener { mBookPresenter.onItemDeleteClickListener(position) }
+            itemView.icon_delete.setOnClickListener { mBookPresenter.onItemDeleteClickListener(userModel) }
             itemView.icon_edit.setOnClickListener { mBookPresenter.onItemEditClickListener(userModel) }
         }
 

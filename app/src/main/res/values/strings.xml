@@ -2,4 +2,6 @@
     <string name="app_name">Address Book</string>
     <string name="_save">save</string>
     <string name="_update">update</string>
+    <string name="no_result">No result.</string>
+    <string name="search">Search by name</string>
 </resources>

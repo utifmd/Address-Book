@@ -22,7 +22,7 @@ class SubmitActivity : AppCompatActivity() {
     private val TAG = javaClass.simpleName
     private var defaultItems = ArrayList<UserModel>()
     private var defaultModel: UserModel? = null
-    private var mPosition: Int? = 0
+    private var mPosition = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,13 +38,13 @@ class SubmitActivity : AppCompatActivity() {
             bundle?.getSerializable(FORM_DATA_ITEM).let {
                 if (it != null) renderData(it as UserModel)
             }
-            bundle?.getSerializable(FORM_DATA_ITEM_POS).let {
-                if (it != null) mPosition = it as Int
-            }
         }
     }
 
     private fun renderData(userModel: UserModel) {
+        defaultModel = userModel
+        mPosition = userModel.id
+
         full_name.setText(userModel.name)
         phone.setText(userModel.phone)
         email.setText(userModel.email)
@@ -67,30 +67,30 @@ class SubmitActivity : AppCompatActivity() {
 
     private fun updateForm(view: View) {
         Log.d(TAG, "updateForm: clicked")
-        if (full_name.text.trim().isEmpty() || phone.text.trim().isEmpty() || email.text.trim().isEmpty() || birthDate.text.trim().isEmpty()){
-            Snackbar.make(view, "Form can't be empty!", Snackbar.LENGTH_SHORT).show()
-        }else{
-//            defaultItems[mPosition!!] = UserModel(
-//                name = full_name.text.trim().toString(),
-//                phone = phone.text.trim().toString(),
-//                email = email.text.trim().toString(),
-//                birthDate = birthDate.text.trim().toString()
-//            )
+        if (full_name.text.trim().isNotEmpty() && phone.text.trim().isNotEmpty() && email.text.trim().isNotEmpty() && birthDate.text.trim().isNotEmpty()){
+            defaultItems[mPosition - 1] = UserModel(
+                id = mPosition,
+                name = full_name.text.trim().toString(),
+                phone = phone.text.trim().toString(),
+                email = email.text.trim().toString(),
+                birthDate = birthDate.text.trim().toString()
+            )
 
             setResult(RESULT_OK, Intent().apply {
                 putExtra(FORM_DATA, defaultItems)
             }).let {
                 finish()
             }
-        }
+        }else
+            Snackbar.make(view, "Form can't be empty!", Snackbar.LENGTH_SHORT).show()
+
     }
 
     private fun saveForm(view: View) {
         Log.d(TAG, "saveForm: clicked")
-        if (full_name.text.trim().isEmpty() || phone.text.trim().isEmpty() || email.text.trim().isEmpty() || birthDate.text.trim().isEmpty()){
-            Snackbar.make(view, "Form can't be empty!", Snackbar.LENGTH_SHORT).show()
-        }else{
+        if (full_name.text.trim().isNotEmpty() && phone.text.trim().isNotEmpty() && email.text.trim().isNotEmpty() && birthDate.text.trim().isNotEmpty()){
             defaultItems.add(UserModel(
+                id = defaultItems.size + 1,
                 name = full_name.text.trim().toString(),
                 phone = phone.text.trim().toString(),
                 email = email.text.trim().toString(),
@@ -102,6 +102,6 @@ class SubmitActivity : AppCompatActivity() {
             }).let {
                 finish()
             }
-        }
+        }else Snackbar.make(view, "Form can't be empty!", Snackbar.LENGTH_SHORT).show()
     }
 }

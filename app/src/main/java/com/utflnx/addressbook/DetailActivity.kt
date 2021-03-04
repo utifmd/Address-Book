@@ -16,7 +16,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun renderData(userModel: UserModel) {
-        tv_name.text = userModel.name
+        tv_name.text = "${userModel.id} ${userModel.name}"
         tv_email.text = userModel.email
         tv_phone.text = userModel.phone
         tv_birth.text = userModel.birthDate
